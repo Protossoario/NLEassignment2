@@ -9,6 +9,11 @@ public class App
     public static void main( String[] args )
     {
     	HTMLParser parser = new HTMLParser();
-    	System.out.println(parser.parseHTML("The Udo.html"));
+        String text = parser.parseHTML("The Udo.html");
+    	//System.out.println(text);
+        
+        POSTagger postagger = new POSTagger();
+        String taggedText = postagger.tag(text);
+        System.out.println(taggedText);
     }
 }
