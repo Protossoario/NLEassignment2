@@ -17,10 +17,14 @@ import opennlp.tools.tokenize.TokenizerModel;
  * @author USER END
  */
 public class StringTokenizer {
-    
-    public String tokenize(String text) {
-        
-        InputStream modelIn = null;
+	private Tokenizer tokenizer;
+	
+	public StringTokenizer() {
+		tokenizer = loadTokenizerModel("en-token.bin");
+	}
+	
+	private Tokenizer loadTokenizerModel(String modelName) {
+		InputStream modelIn = null;
         
         TokenizerModel model;
         
@@ -43,7 +47,10 @@ public class StringTokenizer {
             }
         }
         
-        Tokenizer tokenizer = new TokenizerME(model);
+        return new TokenizerME(model);
+	}
+    
+    public String tokenize(String text) {
         String [] tokens = tokenizer.tokenize(text);
         StringBuilder tokenizedText = new StringBuilder();
         
@@ -56,31 +63,6 @@ public class StringTokenizer {
     }
     
     public String[] tokenizeToArray(String text) {
-    	InputStream modelIn = null;
-        
-        TokenizerModel model;
-        
-        try {
-            modelIn = new FileInputStream("en-token.bin");
-            model = new TokenizerModel(modelIn);
-        }
-        catch (IOException e) {
-            //Model loading failure, handle error
-            model = null;
-            e.printStackTrace();
-        }
-        finally {
-            if (modelIn != null) {
-                try {
-                    modelIn.close();
-                }
-                catch (IOException e) {
-                }
-            }
-        }
-        
-        Tokenizer tokenizer = new TokenizerME(model);
-        
         return tokenizer.tokenize(text);
     }
     

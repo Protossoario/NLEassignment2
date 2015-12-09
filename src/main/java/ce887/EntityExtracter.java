@@ -10,6 +10,18 @@ import opennlp.tools.util.Span;
 
 public class EntityExtracter {
 	
+	private NameFinderME personTagger;
+	private NameFinderME locationTagger;
+	private NameFinderME organizationTagger;
+	private NameFinderME dateTagger;
+	
+	public EntityExtracter() {
+		personTagger = loadNER("en-ner-person.bin");
+		locationTagger = loadNER("en-ner-location.bin");
+		organizationTagger = loadNER("en-ner-organization.bin");
+		dateTagger = loadNER("en-ner-date.bin");
+	}
+	
 	private NameFinderME loadNER(String modelName) {
 		InputStream modelIn = null;
 		TokenNameFinderModel model;
@@ -37,9 +49,7 @@ public class EntityExtracter {
 	}
 	
 	public String extractPeople(String[] tokens) {
-		NameFinderME tagger = loadNER("en-ner-person.bin");
-		
-		Span[] nameSpans = tagger.find(tokens);
+		Span[] nameSpans = personTagger.find(tokens);
 		String[] entitiesStrings = Span.spansToStrings(nameSpans, tokens);
 		StringBuilder result = new StringBuilder();
 		for (String s : entitiesStrings) {
@@ -52,10 +62,8 @@ public class EntityExtracter {
 		return result.toString();
 	}
 	
-	public String extractLocations(String[] tokens) {
-		NameFinderME tagger = loadNER("en-ner-location.bin");
-		
-		Span[] nameSpans = tagger.find(tokens);
+	public String extractLocations(String[] tokens) {		
+		Span[] nameSpans = locationTagger.find(tokens);
 		String[] entitiesStrings = Span.spansToStrings(nameSpans, tokens);
 		StringBuilder result = new StringBuilder();
 		for (String s : entitiesStrings) {
@@ -68,10 +76,8 @@ public class EntityExtracter {
 		return result.toString();
 	}
 	
-	public String extractOrganizations(String[] tokens) {
-		NameFinderME tagger = loadNER("en-ner-organization.bin");
-		
-		Span[] nameSpans = tagger.find(tokens);
+	public String extractOrganizations(String[] tokens) {		
+		Span[] nameSpans = organizationTagger.find(tokens);
 		String[] entitiesStrings = Span.spansToStrings(nameSpans, tokens);
 		StringBuilder result = new StringBuilder();
 		for (String s : entitiesStrings) {
@@ -84,10 +90,8 @@ public class EntityExtracter {
 		return result.toString();
 	}
 	
-	public String extractDates(String[] tokens) {
-		NameFinderME tagger = loadNER("en-ner-date.bin");
-		
-		Span[] nameSpans = tagger.find(tokens);
+	public String extractDates(String[] tokens) {		
+		Span[] nameSpans = dateTagger.find(tokens);
 		String[] entitiesStrings = Span.spansToStrings(nameSpans, tokens);
 		StringBuilder result = new StringBuilder();
 		for (String s : entitiesStrings) {

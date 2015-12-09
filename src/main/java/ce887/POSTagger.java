@@ -16,14 +16,20 @@ import opennlp.tools.postag.POSTaggerME;
  * @author eovill
  */
 public class POSTagger {
-    
-    public String tag (String text) {
-        InputStream modelIn = null;
+	
+	private POSTaggerME tagger;
+	
+	public POSTagger() {
+		tagger = loadTaggerModel("en-pos-maxent.bin");
+	}
+	
+	private POSTaggerME loadTaggerModel(String modelName) {
+		InputStream modelIn = null;
         
         POSModel model;
         
         try {
-            modelIn = new FileInputStream("en-pos-maxent.bin");
+            modelIn = new FileInputStream(modelName);
             model = new POSModel(modelIn);
         }
         catch (IOException e) {
@@ -41,10 +47,15 @@ public class POSTagger {
             }
         }
         
-        POSTaggerME tagger = new POSTaggerME(model);
-        
-        
+        return new POSTaggerME(model);
+	}
+    
+    public String tag (String text) {
         return tagger.tag(text);
+    }
+    
+    public String[] tagTokens(String[] tokens) {
+    	return tagger.tag(tokens);
     }
     
 }
