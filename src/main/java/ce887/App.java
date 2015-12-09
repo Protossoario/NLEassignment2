@@ -1,7 +1,6 @@
 package ce887;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
@@ -30,9 +29,16 @@ public class App
         outTagged.println(taggedText);
         //System.out.println(taggedText);
         
+        EntityExtracter entities = new EntityExtracter();
+        String[] tokens = tokenizer.tokenizeToArray(text);
+        String people = entities.extractPeople(tokens);
+        PrintWriter outPeople = new PrintWriter("peopleNER.txt");
+        outPeople.println(people);
+        System.out.println(people);
         
         outText.close();
         outTokens.close();
         outTagged.close();
+        outPeople.close();
     }
 }

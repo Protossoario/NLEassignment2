@@ -6,7 +6,6 @@
 package ce887;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import opennlp.tools.tokenize.Tokenizer;
@@ -54,6 +53,35 @@ public class StringTokenizer {
         }
         
         return tokenizedText.toString();
+    }
+    
+    public String[] tokenizeToArray(String text) {
+    	InputStream modelIn = null;
+        
+        TokenizerModel model;
+        
+        try {
+            modelIn = new FileInputStream("en-token.bin");
+            model = new TokenizerModel(modelIn);
+        }
+        catch (IOException e) {
+            //Model loading failure, handle error
+            model = null;
+            e.printStackTrace();
+        }
+        finally {
+            if (modelIn != null) {
+                try {
+                    modelIn.close();
+                }
+                catch (IOException e) {
+                }
+            }
+        }
+        
+        Tokenizer tokenizer = new TokenizerME(model);
+        
+        return tokenizer.tokenize(text);
     }
     
 }
