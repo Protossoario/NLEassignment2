@@ -77,6 +77,8 @@ public class App
         
         /**
          * Now we take the tokenized sentences and run several of OpenNLP's NER models on them.
+         * Each model's entities are output into a separate file, with each extracted entity occupying a line of text.
+         * Since this approach takes too many lines of text, the output is not logged to console.
          */
         System.out.println("NER Tagging commencing.");
         EntityExtracter entities = new EntityExtracter();
