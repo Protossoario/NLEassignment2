@@ -15,30 +15,47 @@ public class App
         String text = parser.parseHTML("The Udo.html");
         PrintWriter outText = new PrintWriter("textFromHTML.txt");
         outText.println(text);
+        outText.close();
     	//System.out.println(text);
         
         StringTokenizer tokenizer = new StringTokenizer();
         String tokenizedText = tokenizer.tokenize(text);
         PrintWriter outTokens = new PrintWriter("tokenizedText.txt");
         outTokens.println(tokenizedText);
+        outTokens.close();
         //System.out.println(tokenizedText);
         
         POSTagger postagger = new POSTagger();
         String taggedText = postagger.tag(tokenizedText);
         PrintWriter outTagged = new PrintWriter("taggedText.txt");
         outTagged.println(taggedText);
+        outTagged.close();
         //System.out.println(taggedText);
-        
+       
         EntityExtracter entities = new EntityExtracter();
         String[] tokens = tokenizer.tokenizeToArray(text);
         String people = entities.extractPeople(tokens);
         PrintWriter outPeople = new PrintWriter("peopleNER.txt");
         outPeople.println(people);
-        System.out.println(people);
-        
-        outText.close();
-        outTokens.close();
-        outTagged.close();
         outPeople.close();
+        //System.out.println(people);
+        
+        String locations = entities.extractLocations(tokens);
+        PrintWriter outLocations = new PrintWriter("locationsNER.txt");
+        outLocations.println(locations);
+        outLocations.close();
+        //System.out.println(locations);
+        
+        String organizations = entities.extractOrganizations(tokens);
+        PrintWriter outOrganizations = new PrintWriter("organizationsNER.txt");
+        outOrganizations.println(organizations);
+        outOrganizations.close();
+        //System.out.println(organizations);
+        
+        String dates = entities.extractDates(tokens);
+        PrintWriter outDates = new PrintWriter("datesNER.txt");
+        outDates.println(dates);
+        outDates.close();
+        //System.out.println(dates);
     }
 }
