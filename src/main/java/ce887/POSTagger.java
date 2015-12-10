@@ -52,12 +52,7 @@ public class POSTagger {
         // Return the model of the POSTagger
         return new POSTaggerME(model);
     }
-    
-    public String tag (String text) {
-        // Tag the text and return it as a String
-        return tagger.tag(text);
-    }
-    
+
     public String[] tagTokens(String[] tokens) {
         // Tag the text and return it as an array of String
         // Each element of the array is a tagged token

@@ -14,8 +14,11 @@ public class App
     	/**
     	 * First, load the input HTML file and get its contained text using Jsoup.
     	 */
+    	System.out.println("Loading HTML and parsing...");
     	HTMLParser parser = new HTMLParser();
         String text = parser.parseHTML("The Udo.html");
+        
+        System.out.println("Done!");
         
         // Print out text as it's scraped from the HTML (not very human-readable)
         PrintWriter outText = new PrintWriter("textFromHTML.txt");
@@ -29,28 +32,26 @@ public class App
         SentenceDetector sentDet = new SentenceDetector();
         StringTokenizer tokenizer = new StringTokenizer();
         POSTagger postagger = new POSTagger();
-        PhraseDetector phraseDetect = new PhraseDetector();
         
+        System.out.println("Splitting HTML text into sentences.");
         // split the text into sentences
         String[] sentences = sentDet.getSentencesFromText(text);
+        System.out.println("Done!");
         
         String[][] tokenizedSentences = new String[sentences.length][];
         String[][] posTags = new String[sentences.length][];
-        String[][] detectedPhrases = new String[sentences.length][];
         
         PrintWriter outTokens = new PrintWriter("tokenizedText.txt");
         PrintWriter outTagged = new PrintWriter("taggedText.txt");
-        PrintWriter outPhrases = new PrintWriter("phrasesText.txt");
+        
+        System.out.println("Tokenizing and POS tagging each sentence...");
         
         for (int i = 0; i < sentences.length; i++) {
         	// split each sentence into an array of tokens
         	String[] tokens = tokenizer.tokenizeToArray(sentences[i]);
         	// get each tokens POS tag
         	String[] tags = postagger.tagTokens(tokens);
-                // Phrase Detector in eah one of the sentences
-                String[] phrases = phraseDetect.extractPhrases(tokens, tags);
-                
-                
+            
         	/**
         	 * After tokenizing the sentence, and tagging each token in the sentence,
         	 * we need to build them back into human-readable sentences.
@@ -70,34 +71,37 @@ public class App
         		taggedSentence.append(tags[j]);
         	}
                 
-                /**
-                 * Using the sentences the phrases will be extracted from it and saved
-                 * in a file separated with a blank space.
-                 */
-                
-                StringBuilder phrasesSentence = new StringBuilder();
-                for (int j = 0; j < phrases.length; j++) {
-                    if (phrasesSentence.length() > 0) {
-                        phrasesSentence.append(' ');
-                    }
-                    phrasesSentence.append(phrases[j]);
-                }
-                
-        	outTokens.println(tokenizedSentence.toString());
-        	outTagged.println(taggedSentence.toString());
-                outPhrases.println(phrasesSentence.toString());
-        	//System.out.println(tokenizedSentence.toString());
-        	//System.out.println(taggedSentence.toString());
-        	
-                
-                
+	    	outTokens.println(tokenizedSentence.toString());
+	    	outTagged.println(taggedSentence.toString());
+	    	
         	tokenizedSentences[i] = tokens;
         	posTags[i] = tags;
-        	detectedPhrases[i] = phrases;
         }
+        
+        System.out.println("Done!");
         
         outTokens.close();
         outTagged.close();
+        
+        /**
+         * Next is the noun-phrase detection part of the pipeline.
+         */
+        
+        PhraseDetector npDet = new PhraseDetector();
+        
+        PrintWriter outPhrases = new PrintWriter("phrasesText.txt");
+        
+        System.out.println("Extracting noun-phrases from sentences...");
+        
+        for (int i = 0; i < tokenizedSentences.length; i++) {
+        	String[] nounPhrases = npDet.extractPhrases(tokenizedSentences[i], posTags[i]);
+        	for (String phrase : nounPhrases) {
+        		outPhrases.println(phrase);
+        	}
+        }
+        
+        System.out.println("Done!");
+        
         outPhrases.close();
         
         /**
@@ -105,7 +109,7 @@ public class App
          * Each model's entities are output into a separate file, with each extracted entity occupying a line of text.
          * Since this approach takes too many lines of text, the output is not logged to console.
          */
-        System.out.println("NER Tagging commencing.");
+        System.out.println("Extracting Named-Entities...");
         EntityExtracter entities = new EntityExtracter();
         
         PrintWriter outPeople = new PrintWriter("peopleNER.txt");
@@ -132,7 +136,7 @@ public class App
         	}
         }
         
-        System.out.println("NER Tagging done!");
+        System.out.println("Done!");
         
         outPeople.close();
         outLocations.close();
