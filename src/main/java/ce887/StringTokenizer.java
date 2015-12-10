@@ -17,41 +17,41 @@ import opennlp.tools.tokenize.TokenizerModel;
  * @author USER END
  */
 public class StringTokenizer {
-	private Tokenizer tokenizer;
-	
-	public StringTokenizer() {
-                // Initialize the tokenization model
-		tokenizer = loadTokenizerModel("en-token.bin");
-	}
-	
-	private Tokenizer loadTokenizerModel(String modelName) {
-            InputStream modelIn = null;
-        
-            TokenizerModel model;
+    private Tokenizer tokenizer;
 
-            try {
-                // Load the file of the Tokenization model
-                modelIn = new FileInputStream("en-token.bin");
-                model = new TokenizerModel(modelIn);
-            }
-            catch (IOException e) {
-                //Model loading failure, handle error
-                model = null;
-                e.printStackTrace();
-            }
-            finally {
-                if (modelIn != null) {
-                    try {
-                        modelIn.close();
-                    }
-                    catch (IOException e) {
-                    }
+    public StringTokenizer() {
+            // Initialize the tokenization model
+            tokenizer = loadTokenizerModel("en-token.bin");
+    }
+
+    private Tokenizer loadTokenizerModel(String modelName) {
+        InputStream modelIn = null;
+
+        TokenizerModel model;
+
+        try {
+            // Load the file of the Tokenization model
+            modelIn = new FileInputStream(modelName);
+            model = new TokenizerModel(modelIn);
+        }
+        catch (IOException e) {
+            //Model loading failure, handle error
+            model = null;
+            e.printStackTrace();
+        }
+        finally {
+            if (modelIn != null) {
+                try {
+                    modelIn.close();
+                }
+                catch (IOException e) {
                 }
             }
-            
-            // Return the model of the tokenizer
-            return new TokenizerME(model);
-	}
+        }
+
+        // Return the model of the tokenizer
+        return new TokenizerME(model);
+    }
     
     public String tokenize(String text) {
         // Tokenize the text and save it into and array

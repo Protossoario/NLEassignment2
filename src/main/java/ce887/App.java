@@ -29,22 +29,28 @@ public class App
         SentenceDetector sentDet = new SentenceDetector();
         StringTokenizer tokenizer = new StringTokenizer();
         POSTagger postagger = new POSTagger();
+        PhraseDetector phraseDetect = new PhraseDetector();
         
         // split the text into sentences
         String[] sentences = sentDet.getSentencesFromText(text);
         
         String[][] tokenizedSentences = new String[sentences.length][];
         String[][] posTags = new String[sentences.length][];
+        String[][] detectedPhrases = new String[sentences.length][];
         
         PrintWriter outTokens = new PrintWriter("tokenizedText.txt");
         PrintWriter outTagged = new PrintWriter("taggedText.txt");
+        PrintWriter outPhrases = new PrintWriter("phrasesText.txt");
         
         for (int i = 0; i < sentences.length; i++) {
         	// split each sentence into an array of tokens
         	String[] tokens = tokenizer.tokenizeToArray(sentences[i]);
         	// get each tokens POS tag
         	String[] tags = postagger.tagTokens(tokens);
-        	
+                // Phrase Detector in eah one of the sentences
+                String[] phrases = phraseDetect.extractPhrases(tokens, tags);
+                
+                
         	/**
         	 * After tokenizing the sentence, and tagging each token in the sentence,
         	 * we need to build them back into human-readable sentences.
@@ -63,17 +69,36 @@ public class App
         		taggedSentence.append('_');
         		taggedSentence.append(tags[j]);
         	}
+                
+                /**
+                 * Using the sentences the phrases will be extracted from it and saved
+                 * in a file separated with a blank space.
+                 */
+                
+                StringBuilder phrasesSentence = new StringBuilder();
+                for (int j = 0; j < phrases.length; j++) {
+                    if (phrasesSentence.length() > 0) {
+                        phrasesSentence.append(' ');
+                    }
+                    phrasesSentence.append(phrases[j]);
+                }
+                
         	outTokens.println(tokenizedSentence.toString());
         	outTagged.println(taggedSentence.toString());
-        	System.out.println(tokenizedSentence.toString());
-        	System.out.println(taggedSentence.toString());
+                outPhrases.println(phrasesSentence.toString());
+        	//System.out.println(tokenizedSentence.toString());
+        	//System.out.println(taggedSentence.toString());
         	
+                
+                
         	tokenizedSentences[i] = tokens;
         	posTags[i] = tags;
+        	detectedPhrases[i] = phrases;
         }
         
         outTokens.close();
         outTagged.close();
+        outPhrases.close();
         
         /**
          * Now we take the tokenized sentences and run several of OpenNLP's NER models on them.
