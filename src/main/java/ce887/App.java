@@ -12,6 +12,14 @@ import java.util.HashMap;
  */
 public class App 
 {
+	/**
+	 * This Hash Map holds the tf.idf information for each term across the whole document collection.
+	 * The keys are the noun-phrases found in all documents, and the value is another Hash Map.
+	 * This second inner Hash Map has the names of the documents as its keys, and the tf.idf weight
+	 * as its value. So to find the tf.idf for term "X" in file "Y", we would need to call:
+	 * 
+	 * 		termFrequencies.get(X).get(Y);
+	 */
 	private static HashMap<String, HashMap<String, Double>> termFrequencies = new HashMap<String, HashMap<String, Double>>();
 	
 	private static void processFile(String fileName) throws FileNotFoundException {
